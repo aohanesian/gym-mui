@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
-import {Box} from '@mui/material'
-import {exerciseOptions, fetchData, youtubeOptions} from "../utils/fetchData";
+import React, { useEffect, useState } from 'react';
+import { useParams } from "react-router-dom";
+import { Box } from '@mui/material'
+import { exerciseOptions, fetchData, youtubeOptions } from "../utils/fetchData";
 import Detail from "../components/Detail";
 import ExerciseVideos from "../components/ExerciseVideos";
 import SimilarExercises from "../components/SimilarExercises";
@@ -11,7 +11,7 @@ const ExerciseDetail = () => {
     const [exerciseVideos, setExerciseVideos] = useState([]);
     const [targetMuscleExercises, setTargetMuscleExercises] = useState([]);
     const [equipmentExercises, setEquipmentExercises] = useState([]);
-    const {id} = useParams();
+    const { id } = useParams();
 
     useEffect(() => {
         const fetchExerciseData = async () => {
@@ -20,7 +20,7 @@ const ExerciseDetail = () => {
             const exerciseDetailData = await fetchData(`${exerciseDbUrl}/exercises/exercise/${id}`, exerciseOptions);
             setExerciseDetail(exerciseDetailData);
 
-            const exerciseVideosData = await fetchData(`${youtubeSearchUrl}/search?query=${exerciseDetail.name}`, youtubeOptions);
+            const exerciseVideosData = await fetchData(`${youtubeSearchUrl}/search?query=${encodeURIComponent(exerciseDetailData.name)}`, youtubeOptions);
             setExerciseVideos(exerciseVideosData.contents);
 
             const targetMuscleExercisesData = await fetchData(`${exerciseDbUrl}/exercises/target/${exerciseDetailData.target}`, exerciseOptions);
@@ -33,8 +33,8 @@ const ExerciseDetail = () => {
     }, [id]);
     return (
         <Box>
-            <Detail exerciseDetail={exerciseDetail}/>
-            <ExerciseVideos exerciseVideos={exerciseVideos} name={exerciseDetail.name}/>
+            <Detail exerciseDetail={exerciseDetail} />
+            <ExerciseVideos exerciseVideos={exerciseVideos} name={exerciseDetail.name} />
             <SimilarExercises targetMuscleExercises={targetMuscleExercises} equipmentExercises={equipmentExercises} />
         </Box>
     );
